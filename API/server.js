@@ -27,5 +27,3 @@ server.start().then(() => {
     console.log("Server started at port 4000");
   });
 });
-
-app.use(express.static("public"));
