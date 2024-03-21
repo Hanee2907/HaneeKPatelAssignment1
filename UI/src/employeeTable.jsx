@@ -1,6 +1,4 @@
-import { Component } from "react";
-
-export default class EmployeeTable extends Component {
+export default class EmployeeTable extends React.Component {
   render() {
     const { employees } = this.props;
 

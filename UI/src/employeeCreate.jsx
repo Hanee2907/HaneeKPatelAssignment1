@@ -1,6 +1,4 @@
-import { Component } from "react";
-
-export default class EmployeeCreate extends Component {
+export default class EmployeeCreate extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

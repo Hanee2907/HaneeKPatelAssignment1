@@ -1,7 +1,6 @@
 import EmployeeDirectory from "./employeeDirectory.jsx";
-import { ReactDOM, Component } from "react";
 
-class App extends Component {
+class App extends React.Component {
   render() {
     return (
       <BrowserRouter>

@@ -1,9 +1,8 @@
-import { Component } from "react";
 import EmployeeCreate from "./employeeCreate.jsx";
 import EmployeeSearch from "./employeeSearch.jsx";
 import EmployeeTable from "./employeeTable.jsx";
 
-export default class EmployeeDirectory extends Component {
+export default class EmployeeDirectory extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
