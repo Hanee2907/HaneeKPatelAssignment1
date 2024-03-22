@@ -1,10 +1,13 @@
-const Employee = require('../models/Employee');
+const Employee = require("../models/Employee");
 
 const resolvers = {
   Query: {
     getEmployees: async () => {
       try {
         const employees = await Employee.find();
+
+          console.log(employees[0].DateOfJoining);
+          console.log(employees);
         return employees;
       } catch (err) {
         throw err;

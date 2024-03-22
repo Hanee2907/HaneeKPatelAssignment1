@@ -26,7 +26,7 @@ export default class EmployeeTable extends React.Component {
                   <td>{employee.FirstName}</td>
                   <td>{employee.LastName}</td>
                   <td>{employee.Age}</td>
-                  <td>{employee.DateOfJoining}</td>
+                  <td>{employee.DateOfJoining.toISOString()}</td>
                   <td>{employee.Title}</td>
                   <td>{employee.Department}</td>
                   <td>{employee.EmployeeType}</td>
