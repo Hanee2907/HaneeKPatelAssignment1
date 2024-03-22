@@ -10,6 +10,14 @@ const resolvers = {
                 throw err;
             }
         },
+        getEmployee: async (_, { id }) => {
+            try {
+                const employee = await Employee.findById(id);
+                return employee;
+            } catch (err) {
+                throw err;
+            }
+        },
     },
     Mutation: {
         createEmployee: async (_, { employeeInput }) => {
@@ -31,8 +39,16 @@ const resolvers = {
             } catch (err) {
                 throw err;
             }
+        },
+        updateEmployee: async (_, { employee }) => {
+            try {
+                const result = await Employee.findByIdAndUpdate(employee.id, employee);
+                return result;
+            } catch (err) {
+                throw err;
+            }
         }
-    },
+    }
 };
 
 module.exports = resolvers;

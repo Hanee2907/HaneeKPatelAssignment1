@@ -1,5 +1,7 @@
 import React from "react";
-export default class EmployeeCreate extends React.Component {
+import { withRouter } from "react-router-dom";
+
+class EmployeeCreate extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -14,8 +16,57 @@ export default class EmployeeCreate extends React.Component {
                 EmployeeType: "Full Time",
             },
             errors: {}, // For storing validation errors
+            editMode: "create",
         };
     }
+
+    componentDidMount() {
+        const { match } = this.props;
+        if (match.params.id) {
+            this.fetchEmployee(match.params.id);
+        }
+        if(match.path.includes("view")) {
+            this.setState({ editMode: "view" });
+        } else if(match.path.includes("edit")) {
+            this.setState({ editMode: "update" });
+        }
+    }
+
+    fetchEmployee = async (id) => {
+        try {
+            const response = await fetch("http://localhost:4000/graphql", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    query: `
+                query getEmployee($id: ID!) {
+                    getEmployee(id: $id) {
+                        id
+                        FirstName
+                        LastName
+                        Age
+                        DateOfJoining
+                        Title
+                        Department
+                        EmployeeType
+                    }
+                }
+            `,
+                    variables: { id },
+                }),
+            });
+            if (!response.ok) {
+                throw new Error("Error fetching employee");
+                return;
+            }
+            const { data } = await response.json();
+            this.setState({ newEmployee: data.getEmployee });
+        } catch (error) {
+            console.error("Error fetching employee:", error);
+        }
+    };
 
     handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -32,6 +83,52 @@ export default class EmployeeCreate extends React.Component {
             },
         }));
     };
+
+    handleCreateOrUpdate = async () => {
+        if(this.state.editMode=="update") {
+            this.handleUpdate();
+        } else if(this.state.editMode=="create") {
+            this.handleCreate();
+        }
+    };
+
+    handleUpdate = async () => {
+        const { newEmployee } = this.state;
+        const errors = this.validate(newEmployee);
+        if (Object.keys(errors).length === 0) {
+            try {
+                const response = await fetch("http://localhost:4000/graphql", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        query: `mutation updateEmployee($employee:EmployeeInput!){
+                            updateEmployee(employee:$employee){
+                                id
+                                FirstName
+                                LastName
+                                Age
+                                DateOfJoining
+                                Title
+                                Department
+                                EmployeeType
+                            }
+                        }`,
+                        variables: { employee: newEmployee }
+                    })
+                });
+                if (!response.ok) {
+                    throw new Error("Error updating employee");
+                    return;
+                }
+                alert("Employee updated successfully");
+            } catch (error) {
+                console.error("Error updating employee:", error);
+            }
+        }
+    }
+
 
     handleCreate = async () => {
         const {id, ...newEmployeeWithoutId} = this.state.newEmployee; // Remove id from newEmployee
@@ -111,7 +208,7 @@ export default class EmployeeCreate extends React.Component {
     };
 
     render() {
-        const { newEmployee, errors } = this.state;
+        const { newEmployee, errors, editMode } = this.state;
 
         return (
             <div style={{ margin: "20px" }}>
@@ -124,6 +221,7 @@ export default class EmployeeCreate extends React.Component {
                             name="FirstName"
                             value={newEmployee.FirstName}
                             onChange={this.handleInputChange}
+                            disabled={editMode==="update" || editMode==="view"}
                         />
                         {errors.FirstName && (
                             <span style={{ color: "red" }}>
@@ -138,6 +236,7 @@ export default class EmployeeCreate extends React.Component {
                             name="LastName"
                             value={newEmployee.LastName}
                             onChange={this.handleInputChange}
+                            disabled={editMode==="update" || editMode==="view"}
                         />
                         {errors.LastName && (
                             <span style={{ color: "red" }}>
@@ -152,6 +251,7 @@ export default class EmployeeCreate extends React.Component {
                             name="Age"
                             value={newEmployee.Age}
                             onChange={this.handleInputChange}
+                            disabled={editMode==="update" || editMode==="view"}
                         />
                         {errors.Age && (
                             <span style={{ color: "red" }}>{errors.Age}</span>
@@ -164,6 +264,7 @@ export default class EmployeeCreate extends React.Component {
                             name="DateOfJoining"
                             value={newEmployee.DateOfJoining}
                             onChange={this.handleInputChange}
+                            disabled={editMode==="update" || editMode==="view"}
                         />
                     </label>
                     <label>
@@ -173,6 +274,7 @@ export default class EmployeeCreate extends React.Component {
                             name="Title"
                             value={newEmployee.Title}
                             onChange={this.handleInputChange}
+                            disabled={editMode=="view"}
                         />
                     </label>
                     <label>
@@ -181,6 +283,7 @@ export default class EmployeeCreate extends React.Component {
                             name="Department"
                             value={newEmployee.Department}
                             onChange={this.handleInputChange}
+                            disabled={editMode=="view"}
                         >
                             <option value="">Select Department</option>
                             <option value="HR">HR</option>
@@ -194,17 +297,20 @@ export default class EmployeeCreate extends React.Component {
                             name="EmployeeType"
                             value={newEmployee.EmployeeType}
                             onChange={this.handleInputChange}
+                            disabled={editMode==="update" || editMode==="view"}
                         >
                             <option value="Full Time">Full Time</option>
                             <option value="Part Time">Part Time</option>
                             <option value="Contract">Contract</option>
                         </select>
                     </label>
-                    <button type="button" onClick={this.handleCreate}>
-                        Create
-                    </button>
+                    {editMode!=="view" && (<button type="button" onClick={this.handleCreateOrUpdate}>
+                        {editMode == "update" ? "Update" : "Create"}
+                    </button>)}
                 </form>
             </div>
         );
     }
 }
+
+export default withRouter(EmployeeCreate);
