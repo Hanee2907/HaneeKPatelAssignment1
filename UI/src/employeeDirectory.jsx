@@ -46,7 +46,6 @@ export default class EmployeeDirectory extends React.Component {
       }
 
       const result = await response.json();
-      console.log(result.data);
       this.setState({ employees: result.data.getEmployees });
     } catch (error) {
       console.error("Error fetching employees:", error);
@@ -103,7 +102,7 @@ export default class EmployeeDirectory extends React.Component {
       <div>
         <h1>Employee Directory</h1>
         <EmployeeSearch />
-        <EmployeeTable employees={employees} onDelete={this.handleOnDelete} />
+        <EmployeeTable onEdit={this.handleOnEdit} employees={employees} onDelete={this.handleOnDelete} />
         <EmployeeCreate onAdd={this.handleAddEmployee} />
       </div>
     );
