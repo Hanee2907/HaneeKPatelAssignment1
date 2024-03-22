@@ -85,6 +85,10 @@ class EmployeeTable extends React.Component {
         this.props.history.push(`/edit/${id}`);
     };
 
+    handleView = (id) => {
+        this.props.history.push(`/view/${id}`);
+    };
+
     render() {
         const { employees } = this.state;
 
@@ -131,6 +135,13 @@ class EmployeeTable extends React.Component {
                                             }
                                         >
                                             Delete
+                                        </button>
+                                        <button
+                                            onClick={() =>
+                                                this.handleView(employee.id)
+                                            }
+                                        >
+                                            View Details
                                         </button>
                                     </td>
                                 </tr>
