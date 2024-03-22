@@ -27,6 +27,14 @@ const resolvers = {
         throw err;
       }
     },
+    deleteEmployee: async (_, { id }) => {
+        try {
+            const employee = await Employee.findByIdAndDelete(id);
+            return employee;
+        } catch (err) {
+            throw err;
+        }
+    }
   },
 };
 

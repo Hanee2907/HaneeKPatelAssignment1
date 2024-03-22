@@ -53,6 +53,12 @@ export default class EmployeeDirectory extends React.Component {
     }
   };
 
+  handleOnDelete = (id) => {
+    this.setState({
+      employees: this.state.employees.filter((employee) => employee.id !== id),
+    });
+  }
+
   handleAddEmployee = async (newEmployee) => {
     try {
       const response = await fetch("http://localhost:4000/graphql", {
@@ -97,7 +103,7 @@ export default class EmployeeDirectory extends React.Component {
       <div>
         <h1>Employee Directory</h1>
         <EmployeeSearch />
-        <EmployeeTable employees={employees} />
+        <EmployeeTable employees={employees} onDelete={this.handleOnDelete} />
         <EmployeeCreate onAdd={this.handleAddEmployee} />
       </div>
     );
