@@ -51,7 +51,43 @@ export default class EmployeeDirectory extends React.Component {
       console.error("Error fetching employees:", error);
     }
   };
-
+  handleEditEmployee = (employeeId) => {
+    // Navigate to the edit employee route with the employee ID
+    this.props.history.push(`/edit-employee/${employeeId}`);
+  };
+  handleDeleteEmployee = async (employeeId) => {
+    try {
+      const response = await fetch("http://localhost:4000/graphql", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          query: `
+            mutation deleteEmployee($id: ID!) {
+              deleteEmployee(id: $id) {
+                id
+              }
+            }
+          `,
+          variables: { id: employeeId },
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Error deleting employee");
+      }
+  
+      // Filter out the deleted employee from the state
+      const updatedEmployees = this.state.employees.filter(
+        (employee) => employee.id !== employeeId
+      );
+      this.setState({ employees: updatedEmployees });
+    } catch (error) {
+      console.error("Error deleting employee:", error);
+    }
+  };
+  
   handleAddEmployee = async (newEmployee) => {
     try {
       const response = await fetch("http://localhost:4000/graphql", {
