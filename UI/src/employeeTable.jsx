@@ -1,5 +1,54 @@
 import React from "react";
-export default class EmployeeTable extends React.Component {
+import { withRouter } from "react-router-dom";
+
+class EmployeeTable extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            employees: [],
+        };
+    }
+    
+    componentDidMount() {
+        this.fetchEmployees();
+    }
+
+    fetchEmployees = async () => {
+        try {
+            const response = await fetch("http://localhost:4000/graphql", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    query: `
+              query {
+                getEmployees {
+                  id
+                  FirstName
+                  LastName
+                  Age
+                  DateOfJoining
+                  Title
+                  Department  
+                  EmployeeType
+                  CurrentStatus
+                }
+              }
+            `,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.statusText}`);
+            }
+
+            const result = await response.json();
+            this.setState({ employees: result.data.getEmployees });
+        } catch (error) {
+            console.error("Error fetching employees:", error);
+        }
+    };
 
     handleDelete = async (id) => {
         try {
@@ -19,15 +68,25 @@ export default class EmployeeTable extends React.Component {
                     variables: JSON.stringify({ id }),
                 }),
             }).then(() => {
-                this.props.onDelete(id);
-            })
+                this.setState({
+                    employees: this.state.employees.filter(
+                        (employee) => employee.id !== id
+                    ),
+                });
+            });
         } catch (error) {
             console.error("Error deleting employee:", error);
         }
     };
 
+
+
+    handleEdit = (id) => {
+        this.props.history.push(`/edit/${id}`);
+    };
+
     render() {
-        const { employees } = this.props;
+        const { employees } = this.state;
 
         return (
             <div>
@@ -59,11 +118,17 @@ export default class EmployeeTable extends React.Component {
                                     <td>{employee.EmployeeType}</td>
                                     <td>{employee.CurrentStatus}</td>
                                     <td>
-                                        <button>Edit</button>
                                         <button
-                                            onClick={() => {
-                                                this.handleDelete(employee.id);
-                                            }}
+                                            onClick={() =>
+                                                this.handleEdit(employee.id)
+                                            }
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() =>
+                                                this.handleDelete(employee.id)
+                                            }
                                         >
                                             Delete
                                         </button>
@@ -76,3 +141,5 @@ export default class EmployeeTable extends React.Component {
         );
     }
 }
+
+export default withRouter(EmployeeTable);
