@@ -1,3 +1,4 @@
+import React from "react";
 export default class EmployeeTable extends React.Component {
   render() {
     const { employees } = this.props;

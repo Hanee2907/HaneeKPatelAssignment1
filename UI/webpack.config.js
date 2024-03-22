@@ -1,27 +1,33 @@
 const path = require('path');
+// const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  entry: './src/app.jsx',
-  output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.js',
-  },
-  devServer: {
-    port: 3000, // Custom port
-    hot: true, // Enable Hot Module Replacement
-  },
-  module: {
-    rules: [
-      {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env', '@babel/preset-react'],
-          },
-        },
-      },
-    ],
-  },
+    mode: 'development',
+    entry: { app: './src/app.jsx' },
+    output: {
+        filename: '[name].bundle.js',
+        path: path.resolve(__dirname, 'public'),
+    },
+    module: {
+        rules: [
+            {
+                test: /\.jsx?$/,
+                exclude: /node_modules/,
+                use: 'babel-loader',
+            },
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader'],
+            },
+            {
+                test: /\.svg$/,
+                use: '@svgr/webpack',
+            },
+        ],
+    },
+    //   plugins: [
+    //     new HtmlWebpackPlugin({
+    //       template: 'public/index.html', // Path to your template HTML file
+    //     }),
+    //   ],
 };
