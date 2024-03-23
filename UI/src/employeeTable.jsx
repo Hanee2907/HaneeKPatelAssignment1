@@ -6,11 +6,26 @@ class EmployeeTable extends React.Component {
         super(props);
         this.state = {
             employees: [],
+            filteredEmployees: [],
         };
     }
-    
+
     componentDidMount() {
         this.fetchEmployees();
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props.match !== prevProps.match) {
+            const filterType = this.props.match.params.filterType;
+            if (filterType) {
+                if (filterType == "all") {
+                    this.setState({ filteredEmployees: this.state.employees })
+                } else {
+                    const filteredEmployees = this.state.employees.filter(employee => employee.EmployeeType === filterType);
+                    this.setState({ filteredEmployees: filteredEmployees });
+                }
+            }
+        }
     }
 
     fetchEmployees = async () => {
@@ -44,7 +59,7 @@ class EmployeeTable extends React.Component {
             }
 
             const result = await response.json();
-            this.setState({ employees: result.data.getEmployees });
+            this.setState({ employees: result.data.getEmployees, filteredEmployees: result.data.getEmployees });
         } catch (error) {
             console.error("Error fetching employees:", error);
         }
@@ -69,7 +84,7 @@ class EmployeeTable extends React.Component {
                 }),
             }).then(() => {
                 this.setState({
-                    employees: this.state.employees.filter(
+                    filteredEmployees: this.state.employees.filter(
                         (employee) => employee.id !== id
                     ),
                 });
@@ -90,7 +105,7 @@ class EmployeeTable extends React.Component {
     };
 
     render() {
-        const { employees } = this.state;
+        const { filteredEmployees } = this.state;
 
         return (
             <div>
@@ -110,8 +125,8 @@ class EmployeeTable extends React.Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {employees &&
-                            employees.map((employee) => (
+                        {filteredEmployees &&
+                            filteredEmployees.map((employee) => (
                                 <tr key={employee.id}>
                                     <td>{employee.FirstName}</td>
                                     <td>{employee.LastName}</td>
