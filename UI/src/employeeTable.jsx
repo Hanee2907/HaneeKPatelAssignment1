@@ -6,6 +6,7 @@ class EmployeeTable extends React.Component {
         super(props);
         this.state = {
             employees: [],
+            filteredEmployees: [],
         };
     }
     
@@ -18,7 +19,7 @@ class EmployeeTable extends React.Component {
             const filterType = this.props.match.params.filterType;
             if(filterType){
                 const filteredEmployees = this.state.employees.filter(employee => employee.EmployeeType === filterType);
-                this.setState({ employees: filteredEmployees });
+                this.setState({ filteredEmployees: filteredEmployees });
             }
         }
     }
@@ -54,7 +55,7 @@ class EmployeeTable extends React.Component {
             }
 
             const result = await response.json();
-            this.setState({ employees: result.data.getEmployees });
+            this.setState({ employees: result.data.getEmployees, filteredEmployees: result.data.getEmployees});
         } catch (error) {
             console.error("Error fetching employees:", error);
         }
@@ -79,7 +80,7 @@ class EmployeeTable extends React.Component {
                 }),
             }).then(() => {
                 this.setState({
-                    employees: this.state.employees.filter(
+                    filteredEmployees: this.state.employees.filter(
                         (employee) => employee.id !== id
                     ),
                 });
@@ -100,7 +101,7 @@ class EmployeeTable extends React.Component {
     };
 
     render() {
-        const { employees } = this.state;
+        const { filteredEmployees } = this.state;
 
         return (
             <div>
@@ -120,8 +121,8 @@ class EmployeeTable extends React.Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {employees &&
-                            employees.map((employee) => (
+                        {filteredEmployees &&
+                            filteredEmployees.map((employee) => (
                                 <tr key={employee.id}>
                                     <td>{employee.FirstName}</td>
                                     <td>{employee.LastName}</td>
