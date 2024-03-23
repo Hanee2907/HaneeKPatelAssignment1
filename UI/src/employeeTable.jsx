@@ -18,8 +18,9 @@ class EmployeeTable extends React.Component {
         if (this.props.match !== prevProps.match) {
             const filterType = this.props.match.params.filterType;
             if(filterType){
+if(filterType=="all"){this.setState({filteredEmployees: employees})} else {
                 const filteredEmployees = this.state.employees.filter(employee => employee.EmployeeType === filterType);
-                this.setState({ filteredEmployees: filteredEmployees });
+                this.setState({ filteredEmployees: filteredEmployees });}
             }
         }
     }
