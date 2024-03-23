@@ -9,18 +9,21 @@ class EmployeeTable extends React.Component {
             filteredEmployees: [],
         };
     }
-    
+
     componentDidMount() {
         this.fetchEmployees();
     }
-    
+
     componentDidUpdate(prevProps) {
         if (this.props.match !== prevProps.match) {
             const filterType = this.props.match.params.filterType;
-            if(filterType){
-if(filterType=="all"){this.setState({filteredEmployees: employees})} else {
-                const filteredEmployees = this.state.employees.filter(employee => employee.EmployeeType === filterType);
-                this.setState({ filteredEmployees: filteredEmployees });}
+            if (filterType) {
+                if (filterType == "all") {
+                    this.setState({ filteredEmployees: this.state.employees })
+                } else {
+                    const filteredEmployees = this.state.employees.filter(employee => employee.EmployeeType === filterType);
+                    this.setState({ filteredEmployees: filteredEmployees });
+                }
             }
         }
     }
@@ -56,7 +59,7 @@ if(filterType=="all"){this.setState({filteredEmployees: employees})} else {
             }
 
             const result = await response.json();
-            this.setState({ employees: result.data.getEmployees, filteredEmployees: result.data.getEmployees});
+            this.setState({ employees: result.data.getEmployees, filteredEmployees: result.data.getEmployees });
         } catch (error) {
             console.error("Error fetching employees:", error);
         }
