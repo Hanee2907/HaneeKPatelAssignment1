@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import EmployeeTable from "./employeeTable.jsx";
-// import EmployeeSearch from "./employeeSearch.jsx";
+// import EmployeeTable from "./employeeTable.jsx";
+import EmployeeDirectory from "./employeeDirectory.jsx";
 import EmployeeCreate from "./employeeCreate.jsx";
 import { Link } from "react-router-dom";
 
@@ -17,8 +17,8 @@ class App extends React.Component {
                 </div>
                 <Switch>
                     <Route exact path="/" component={Home} />
-                    <Route exact path="/list/all" component={EmployeeTable} />
-                    <Route exact path="/list/:filterType" component={EmployeeTable} />
+                    <Route exact path="/list/all" component={EmployeeDirectory} />
+                    <Route exact path="/list/:filterType" component={EmployeeDirectory} />
                     <Route exact path="/add-new" component={EmployeeCreate} />
                     <Route exact path="/edit/:id" component={EmployeeCreate} />
                     <Route exact path="/view/:id" component={EmployeeCreate} />

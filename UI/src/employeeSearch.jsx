@@ -1,73 +1,61 @@
 import React from "react";
-export default class EmployeeSearch extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      searchParams: {
-        Age: "",
-        Department: "",
-        jobTitle: "",
-      },
-    };
-  }
+import { withRouter } from "react-router-dom";
 
-  handleInputChange = (e) => {
-    const { name, value } = e.target;
-    let parsedValue = value;
-
-    if (name === "Age") {
-      parsedValue = isNaN(value) ? "" : parseInt(value, 10);
+class EmployeeSearch extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            searchParams: {
+                employeeType: "",
+                // jobTitle: "",
+            },
+        };
     }
 
-    this.setState((prevState) => ({
-      newEmployee: {
-        ...prevState.newEmployee,
-        [name]: parsedValue,
-      },
-    }));
-  };
+    handleInputChange = (e) => {
+        const { name, value } = e.target;
+        let parsedValue = value;
 
-  handleSearch = () => {
-    const { onSearch } = this.props;
-    const { searchParams } = this.state;
-    onSearch(searchParams);
-  };
+        this.setState(prev => ({ searchParams: { ...prev.searchParams, [name]: parsedValue }}));
+    };
 
-  render() {
-    const { searchParams } = this.state;
+    handleSearch = () => {
+        const { searchParams } = this.state;
+        this.props.history.push(`/list/${searchParams.employeeType}`);
+    };
 
-    return (
-      <div>
-        <h2>Search Employees</h2>
-        <label>
-          Age:
-          <input
-            type="number"
-            name="Age"
-            value={searchParams.Age}
-            onChange={this.handleInputChange}
-          />
-        </label>
-        <label>
-          Department:
-          <input
-            type="text"
-            name="Department"
-            value={searchParams.Department}
-            onChange={this.handleInputChange}
-          />
-        </label>
-        <label>
-          Job Title:
-          <input
-            type="text"
-            name="jobTitle"
-            value={searchParams.jobTitle}
-            onChange={this.handleInputChange}
-          />
-        </label>
-        <button onClick={this.handleSearch}>Search</button>
-      </div>
-    );
-  }
+    render() {
+        const { searchParams } = this.state;
+
+        return (
+            <div>
+                <h2>Search Employees</h2>
+                <label>
+                    Employee Type:
+                    <select
+                        name="employeeType"
+                        value={searchParams.employeeType}
+                        onChange={this.handleInputChange}
+                    >
+                        <option value="all">All</option>
+                        <option value="Full Time">Full Time</option>
+                        <option value="Part Time">Part Time</option>
+                        <option value="Contract">Contract</option>
+                    </select>
+                </label>
+                {/* <label>
+                    Job Title:
+                    <input
+                        type="text"
+                        name="jobTitle"
+                        value={searchParams.jobTitle}
+                        onChange={this.handleInputChange}
+                    />
+                </label> */}
+                <button onClick={this.handleSearch}>Search</button>
+            </div>
+        );
+    }
 }
+
+export default withRouter(EmployeeSearch);

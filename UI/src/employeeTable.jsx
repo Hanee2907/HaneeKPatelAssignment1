@@ -12,6 +12,16 @@ class EmployeeTable extends React.Component {
     componentDidMount() {
         this.fetchEmployees();
     }
+    
+    componentDidUpdate(prevProps) {
+        if (this.props.match !== prevProps.match) {
+            const filterType = this.props.match.params.filterType;
+            if(filterType){
+                const filteredEmployees = this.state.employees.filter(employee => employee.EmployeeType === filterType);
+                this.setState({ employees: filteredEmployees });
+            }
+        }
+    }
 
     fetchEmployees = async () => {
         try {
