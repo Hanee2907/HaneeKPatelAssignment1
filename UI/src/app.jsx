@@ -17,7 +17,6 @@ class App extends React.Component {
                 </div>
                 <Switch>
                     <Route exact path="/" component={Home} />
-                    <Route exact path="/list/all" component={EmployeeDirectory} />
                     <Route exact path="/list/:filterType" component={EmployeeDirectory} />
                     <Route exact path="/add-new" component={EmployeeCreate} />
                     <Route exact path="/edit/:id" component={EmployeeCreate} />
